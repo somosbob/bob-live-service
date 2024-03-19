@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Document</title>
+
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+    <script>
+        const socket = io("https://bob-live-service-1d20d210ef55.herokuapp.com");
+
+        const apiKeyToken = "TOKEN-1"; // Aquí debes colocar el token real obtenido del usuario
+
+        // Conectar al servidor Socket.IO y enviar el token como parte de los datos
+        socket.on('connect', () => {
+            socket.emit('authenticate', {token: apiKeyToken, lot_id: '120'});
+        });
+
+        socket.on('message', (data) => {
+            if (data.action === 'initial') {
+                for (let element in data['messages']) {
+                    const message = data['messages'][element].message;
+                    const chatBox = document.getElementById('chatBox');
+                    const messageElement = document.createElement('div');
+                    messageElement.innerHTML = message;
+                    chatBox.appendChild(messageElement);
+                }
+            } else if (data.action === 'totalConnected') {
+                document.getElementById('userCount').innerText = data.number;
+            } else if (data.action === 'bid') {
+                const message = data.message;
+                const nextBid = data.nextBid;
+                const chatBox = document.getElementById('chatBox');
+                const messageElement = document.createElement('div');
+                const messageInput = document.getElementById('messageInput');
+                messageInput.value = nextBid;
+                messageElement.innerHTML = message;
+                chatBox.appendChild(messageElement);
+            }
+        });
+
+        function sendMessage(event) {
+            if (event.key === 'Enter') {
+                const messageInput = document.getElementById('messageInput');
+                const message = messageInput.value.trim();
+                if (message !== '') {
+                    socket.emit('message', {bid: message});
+                    messageInput.value = ''; // Limpiar el campo de texto después de enviar el mensaje
+                }
+            }
+        }
+
+    </script>
+</head>
+<body>
+
+<h1>Usuarios Conectados: <span id="userCount">0</span></h1>
+<br>
+<h1>BIDs</h1>
+<div id="chatBox"></div>
+<input type="text" id="messageInput" onkeypress="sendMessage(event)" placeholder="Escribe un mensaje y presiona Enter">
+</body>
+</html>
