@@ -275,3 +275,17 @@ flat_lot = {
     "start_date_time": "2024-02-29T16:00:00.000-0500",
     "status": "active"
 }
+
+user_profile_json = {
+    "id": 1,
+    "image": "https://bob-live-service-1d20d210ef55.herokuapp.com/static/images/profile-0.jpeg",
+    "first_name": "Raul",
+    "last_name": "Bustamante",
+    "email": "raul@bustamante.me",
+    "birthday": "1991-01-12",
+    "id_document": {
+        "id": 1,
+        "name": "DNI"
+    },
+    "id_number": "12345678"
+}

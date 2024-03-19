@@ -4,7 +4,7 @@ import socketio
 import uvicorn
 from starlette.staticfiles import StaticFiles
 
-from data import lot_json, flat_lot
+from data import lot_json, flat_lot, user_profile_json
 from utils.sentry import configure_sentry
 
 BID_INCREMENT = 50.0
@@ -35,6 +35,11 @@ def authenticate_user(data):
 @app.get('/')
 async def root():
     return {'Hello': 'World'}
+
+
+@app.get('/profile')
+async def lot(lot_id: str):
+    return user_profile_json
 
 
 @app.get('/lots/{lot_id}')
